@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fi">
 <head>
@@ -789,7 +790,7 @@
 
     .modal-box {
       width: 100%;
-      max-width: 980px;
+      max-width: 1040px;
       max-height: 96vh;
       overflow-y: auto;
       background: var(--bg-surface-strong);
@@ -804,7 +805,7 @@
 
     .modal-box.camera-modal-box,
     .modal-box.preview-modal-box {
-      max-width: 1080px;
+      max-width: 1100px;
       width: 96vw;
     }
 
@@ -814,6 +815,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+      flex-shrink: 0;
     }
 
     .modal-head h2 {
@@ -834,6 +836,7 @@
       border-radius: var(--radius-md);
       padding: 10px;
       border: 1px solid rgba(148, 163, 184, 0.14);
+      flex-shrink: 0;
     }
 
     .camera-stage {
@@ -852,13 +855,18 @@
     }
 
     .camera-stage.a4-portrait {
-      width: min(100%, calc(66vh * 210 / 297));
+      width: min(100%, calc(64vh * 210 / 297));
       aspect-ratio: 210 / 297;
     }
 
     .camera-stage.a4-landscape {
-      width: min(100%, calc(64vh * 297 / 210));
+      width: min(100%, calc(62vh * 297 / 210));
       aspect-ratio: 297 / 210;
+    }
+
+    .camera-stage.full-sensor {
+      width: min(100%, 860px);
+      max-height: 64vh;
     }
 
     #cameraVideo {
@@ -866,6 +874,11 @@
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+
+    .camera-stage.full-sensor #cameraVideo {
+      object-fit: contain;
+      max-height: 64vh;
     }
 
     .camera-guide {
@@ -877,11 +890,11 @@
     }
 
     .camera-guide::before {
-      content: 'A4';
+      content: attr(data-mode-label);
       position: absolute;
       top: 8px;
       left: 10px;
-      background: rgba(2, 6, 23, 0.75);
+      background: rgba(2, 6, 23, 0.78);
       color: var(--cyan-bright);
       font-size: 0.72rem;
       font-weight: 800;
@@ -949,6 +962,7 @@
       background: rgba(6, 10, 24, 0.8);
       border: 1px solid rgba(148, 163, 184, 0.16);
       border-radius: var(--radius-sm);
+      flex-shrink: 0;
     }
 
     .focus-slider-wrap {
@@ -997,24 +1011,24 @@
       max-width: 480px;
     }
 
-    /* Rajaus & suoristus editori */
+    /* Rajaus & suoristus editori — flex-shrink: 0 takaa että kuva näkyy aina kokonaan */
     .crop-stage {
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-shrink: 0;
+      width: 100%;
       background: #02040a;
       border-radius: var(--radius-md);
       border: 1px solid rgba(56, 189, 248, 0.22);
-      padding: 12px;
-      overflow: hidden;
+      padding: 10px;
       touch-action: none;
       user-select: none;
     }
 
     #cropCanvas {
-      max-width: 100%;
-      max-height: 54vh;
+      display: block;
       border-radius: 6px;
       cursor: crosshair;
       touch-action: none;
@@ -1031,6 +1045,15 @@
       display: none;
       z-index: 10;
       background: #000;
+    }
+
+    .crop-options-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
     }
 
     .filter-pills {
@@ -1076,6 +1099,7 @@
       background: rgba(6, 10, 24, 0.82);
       border: 1px solid rgba(148, 163, 184, 0.14);
       border-radius: var(--radius-sm);
+      flex-shrink: 0;
     }
 
     .preview-zoom-controls {
@@ -1130,6 +1154,7 @@
       gap: 12px;
       padding-top: 8px;
       border-top: 1px solid rgba(148, 163, 184, 0.12);
+      flex-shrink: 0;
     }
 
     .empty-hint {
@@ -1482,7 +1507,7 @@
       <div class="camera-viewport-wrap">
         <div class="camera-stage a4-portrait" id="cameraStage">
           <video id="cameraVideo" autoplay playsinline muted></video>
-          <div class="camera-guide" id="cameraGuide">
+          <div class="camera-guide" id="cameraGuide" data-mode-label="A4">
             <span class="camera-guide-label" data-i18n="camTapGuide">Napauta paperia tarkentaaksesi</span>
           </div>
           <div class="focus-ring" id="focusRing"></div>
@@ -1548,16 +1573,24 @@
         <canvas id="loupeCanvas" width="124" height="124"></canvas>
       </div>
 
-      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;">
+      <div class="crop-options-row">
         <div class="filter-pills" role="group" aria-label="Filter">
           <span style="font-size:0.82rem; color:var(--text-muted); font-weight:600;" data-i18n="lblFilter">Käsittely:</span>
           <button class="pill-btn" data-filter="original" data-i18n="filterOrig">Alkuperäinen</button>
           <button class="pill-btn active" data-filter="enhanced" data-i18n="filterColor">Asiakirja (Väri)</button>
           <button class="pill-btn" data-filter="bw" data-i18n="filterBw">Mustavalko (Skannaus)</button>
         </div>
-        <span style="font-size:0.8rem; color:var(--text-muted);" data-i18n="cropDragHint">
-          Vedä 4 sinistä kulmapistettä täsmälleen paperin kulmiin.
-        </span>
+
+        <div class="filter-pills" role="group" aria-label="Sharpness">
+          <span style="font-size:0.82rem; color:var(--text-muted); font-weight:600;" data-i18n="lblSharpness">Terävyys:</span>
+          <button class="pill-btn" data-sharp="0.4" data-i18n="sharpMild">Mieto</button>
+          <button class="pill-btn" data-sharp="0.9" data-i18n="sharpNormal">Normaali</button>
+          <button class="pill-btn active" data-sharp="1.45" data-i18n="sharpStrong">Voimakas</button>
+        </div>
+      </div>
+
+      <div style="font-size:0.8rem; color:var(--text-muted);" data-i18n="cropDragHint">
+        Vedä 4 sinistä kulmapistettä täsmälleen paperin kulmiin.
       </div>
 
       <div class="modal-footer">
@@ -1649,6 +1682,7 @@
           optA4Auto: 'A4 (Automaattinen suunta)',
           optA4Port: 'A4 Pysty',
           optA4Land: 'A4 Vaaka',
+          optFullSensor: 'Täysi kenno',
           lblMargin: 'Marginaali',
           optMargin0: 'Ei marginaalia',
           optMarginSmall: 'Pieni marginaali',
@@ -1693,7 +1727,7 @@
           camTip: 'Vinkki: Tumma pöytä paperin alla helpottaa reunojen tunnistusta. Napauta ruutua tarkentaaksesi.',
           camTipFixed: 'Huom: Kamera ei tue ohjelmallista tarkennusta — pidä paperi väh. 35 cm etäisyydellä hyvässä valossa.',
           btnCapture: 'Ota A4-kuva',
-          btnCapturing: 'Otetaan tarkka kuva...',
+          btnCapturing: 'Tarkentaa & kuvaa...',
           cropModalTitle: 'Rajaa & Suorista paperi',
           btnAutoDetect: 'Auto-tunnistus',
           btnFullFrame: 'Koko kuva',
@@ -1703,6 +1737,10 @@
           filterOrig: 'Alkuperäinen',
           filterColor: 'Asiakirja (Väri)',
           filterBw: 'Mustavalko (Skannaus)',
+          lblSharpness: 'Terävyys:',
+          sharpMild: 'Mieto',
+          sharpNormal: 'Normaali',
+          sharpStrong: 'Voimakas',
           cropDragHint: 'Vedä 4 sinistä kulmapistettä täsmälleen paperin kulmiin.',
           btnCropNext: 'Suorista & ota seuraava kuva',
           btnCropApply: 'Suorista ja lisää PDF-jonoon',
@@ -1768,6 +1806,7 @@
           optA4Auto: 'A4 (Auto orientation)',
           optA4Port: 'A4 Portrait',
           optA4Land: 'A4 Landscape',
+          optFullSensor: 'Full sensor',
           lblMargin: 'Margin',
           optMargin0: 'No margin',
           optMarginSmall: 'Small margin',
@@ -1812,7 +1851,7 @@
           camTip: 'Tip: A dark desk under white paper improves edge detection. Tap the preview to focus.',
           camTipFixed: 'Note: Camera reports no autofocus control — keep paper at least 35 cm away in good light.',
           btnCapture: 'Capture A4 photo',
-          btnCapturing: 'Capturing sharp photo...',
+          btnCapturing: 'Focusing & capturing...',
           cropModalTitle: 'Crop & Straighten Paper',
           btnAutoDetect: 'Auto-detect',
           btnFullFrame: 'Full frame',
@@ -1822,6 +1861,10 @@
           filterOrig: 'Original',
           filterColor: 'Document (Color)',
           filterBw: 'B&W (Scan)',
+          lblSharpness: 'Sharpness:',
+          sharpMild: 'Mild',
+          sharpNormal: 'Normal',
+          sharpStrong: 'Strong',
           cropDragHint: 'Drag the 4 blue corner points to the exact corners of the paper.',
           btnCropNext: 'Straighten & take next photo',
           btnCropApply: 'Straighten & add to PDF queue',
@@ -2105,7 +2148,7 @@
         ctx.translate(c.width / 2, c.height / 2);
         ctx.rotate(Math.PI / 2);
         ctx.drawImage(img, -img.width / 2, -img.height / 2);
-        page.dataUrl = c.toDataURL('image/jpeg', 0.93);
+        page.dataUrl = c.toDataURL('image/jpeg', 0.94);
         page.width = c.width;
         page.height = c.height;
         updateScanUI();
@@ -2120,7 +2163,7 @@
         });
       }
 
-      async function bitmapOrBlobToCanvas(source, maxDim = 2800) {
+      async function bitmapOrBlobToCanvas(source, maxDim = 3200) {
         let bitmap;
         if (window.createImageBitmap) {
           bitmap = await createImageBitmap(source);
@@ -2160,7 +2203,7 @@
             scanPages.push({
               id: uid(),
               name: file.name,
-              dataUrl: canvas.toDataURL('image/jpeg', 0.93),
+              dataUrl: canvas.toDataURL('image/jpeg', 0.94),
               width: canvas.width,
               height: canvas.height
             });
@@ -2288,33 +2331,43 @@
       });
 
       /* ---------------------------------------------------------
-         SUURI A4-KAMERA, IMAGECAPTURE-KUVAUS & TARKENNUS
+         SUURI A4-KAMERA, IMAGECAPTURE + BURST TERÄVYYSMITTAUS + TARKENNUS
       --------------------------------------------------------- */
       let cameraStream = null;
       let videoDevices = [];
       let currentDeviceIdx = 0;
-      let cameraA4Orientation = 'portrait'; // 'portrait' | 'landscape'
+      let cameraViewMode = 'portrait'; // 'portrait' | 'landscape' | 'full'
       let torchEnabled = false;
       let activeVideoTrack = null;
       let trackCaps = {};
       let imageCaptureObj = null;
+      let isManualFocusMode = false;
+      let lastFocusTapTime = 0;
 
       function updateCameraOrientButton() {
         const stage = $('cameraStage');
         const btn = $('toggleA4OrientBtn');
-        if (cameraA4Orientation === 'portrait') {
+        const guide = $('cameraGuide');
+        stage.classList.remove('a4-portrait', 'a4-landscape', 'full-sensor');
+        if (cameraViewMode === 'portrait') {
           stage.classList.add('a4-portrait');
-          stage.classList.remove('a4-landscape');
           btn.textContent = t('optA4Port');
-        } else {
-          stage.classList.remove('a4-portrait');
+          guide.setAttribute('data-mode-label', 'A4');
+        } else if (cameraViewMode === 'landscape') {
           stage.classList.add('a4-landscape');
           btn.textContent = t('optA4Land');
+          guide.setAttribute('data-mode-label', 'A4');
+        } else {
+          stage.classList.add('full-sensor');
+          btn.textContent = t('optFullSensor');
+          guide.setAttribute('data-mode-label', 'MAX');
         }
       }
 
       $('toggleA4OrientBtn').addEventListener('click', () => {
-        cameraA4Orientation = cameraA4Orientation === 'portrait' ? 'landscape' : 'portrait';
+        if (cameraViewMode === 'portrait') cameraViewMode = 'landscape';
+        else if (cameraViewMode === 'landscape') cameraViewMode = 'full';
+        else cameraViewMode = 'portrait';
         updateCameraOrientButton();
       });
 
@@ -2335,19 +2388,32 @@
         activeVideoTrack = track;
         trackCaps = (track && track.getCapabilities) ? track.getCapabilities() : {};
         torchEnabled = false;
+        isManualFocusMode = false;
         $('torchBtn').classList.remove('btn-active-glow');
 
-        // Luodaan ImageCapture todellista täyden tarkkuuden still-kuvausta varten
         imageCaptureObj = ('ImageCapture' in window && track) ? new ImageCapture(track) : null;
 
-        // Pyydetään kameran korkein natiiviresoluutio still/video-käyttöön
-        if (track && track.applyConstraints && trackCaps.width && trackCaps.height) {
-          try {
-            await track.applyConstraints({
-              width: { ideal: trackCaps.width.max },
-              height: { ideal: trackCaps.height.max }
-            });
-          } catch (_) {}
+        // Neuvotellaan kameran korkein resoluutio & jatkuva valotus
+        if (track && track.applyConstraints) {
+          const adv = {};
+          if (trackCaps.width && trackCaps.height) {
+            const isMobilePort = window.innerHeight > window.innerWidth && cameraViewMode === 'portrait';
+            try {
+              await track.applyConstraints({
+                width: { ideal: isMobilePort ? Math.min(trackCaps.width.max, trackCaps.height.max) : trackCaps.width.max },
+                height: { ideal: isMobilePort ? Math.max(trackCaps.width.max, trackCaps.height.max) : trackCaps.height.max }
+              });
+            } catch (_) {}
+          }
+          if (Array.isArray(trackCaps.exposureMode) && trackCaps.exposureMode.includes('continuous')) {
+            adv.exposureMode = 'continuous';
+          }
+          if (Array.isArray(trackCaps.whiteBalanceMode) && trackCaps.whiteBalanceMode.includes('continuous')) {
+            adv.whiteBalanceMode = 'continuous';
+          }
+          if (Object.keys(adv).length) {
+            try { await track.applyConstraints({ advanced: [adv] }); } catch (_) {}
+          }
         }
 
         $('torchBtn').classList.toggle('hidden', !trackCaps.torch);
@@ -2375,6 +2441,7 @@
       }
 
       async function applyContinuousAutofocus() {
+        isManualFocusMode = false;
         if (!activeVideoTrack || !activeVideoTrack.applyConstraints) return;
         const modes = Array.isArray(trackCaps.focusMode) ? trackCaps.focusMode : [];
         if (modes.includes('continuous')) {
@@ -2399,6 +2466,8 @@
         ring.classList.add('active');
 
         if (!activeVideoTrack || !activeVideoTrack.applyConstraints) return;
+        lastFocusTapTime = Date.now();
+        isManualFocusMode = false;
 
         const modes = Array.isArray(trackCaps.focusMode) ? trackCaps.focusMode : [];
         const adv = {};
@@ -2424,10 +2493,10 @@
             updateCameraInfoPill(t('focusTriggered'), false);
             if (adv.focusMode === 'single-shot' && modes.includes('continuous')) {
               setTimeout(() => {
-                if (activeVideoTrack) {
+                if (activeVideoTrack && !isManualFocusMode && Date.now() - lastFocusTapTime > 2000) {
                   activeVideoTrack.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }).catch(() => {});
                 }
-              }, 1600);
+              }, 2200);
             }
           } catch (_) {
             if (adv.focusMode) {
@@ -2462,6 +2531,7 @@
       $('focusDistanceRange').addEventListener('input', async (e) => {
         if (!activeVideoTrack || !activeVideoTrack.applyConstraints) return;
         const dist = Number(e.target.value);
+        isManualFocusMode = true;
         try {
           await activeVideoTrack.applyConstraints({
             advanced: [{ focusMode: 'manual', focusDistance: dist }]
@@ -2508,10 +2578,11 @@
         }
 
         try {
+          const isMobilePort = window.innerHeight > window.innerWidth && cameraViewMode === 'portrait';
           const constraints = {
             video: deviceId
-              ? { deviceId: { exact: deviceId }, width: { ideal: 3840 }, height: { ideal: 2160 } }
-              : { facingMode: { ideal: 'environment' }, width: { ideal: 3840 }, height: { ideal: 2160 } },
+              ? { deviceId: { exact: deviceId }, width: { ideal: isMobilePort ? 2160 : 3840 }, height: { ideal: isMobilePort ? 3840 : 2160 } }
+              : { facingMode: { ideal: 'environment' }, width: { ideal: isMobilePort ? 2160 : 3840 }, height: { ideal: isMobilePort ? 3840 : 2160 } },
             audio: false
           };
           cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -2562,9 +2633,17 @@
         startCamera(videoDevices[currentDeviceIdx].deviceId);
       });
 
-      function cropSourceToA4Canvas(sourceEl, srcW, srcH) {
+      function cropSourceToViewModeCanvas(sourceEl, srcW, srcH) {
+        if (cameraViewMode === 'full') {
+          const c = document.createElement('canvas');
+          c.width = srcW;
+          c.height = srcH;
+          c.getContext('2d').drawImage(sourceEl, 0, 0, srcW, srcH);
+          return c;
+        }
+
         const srcRatio = srcW / srcH;
-        const targetRatio = cameraA4Orientation === 'portrait' ? (210 / 297) : (297 / 210);
+        const targetRatio = cameraViewMode === 'portrait' ? (210 / 297) : (297 / 210);
 
         let sx = 0, sy = 0, sw = srcW, sh = srcH;
         if (srcRatio > targetRatio) {
@@ -2582,7 +2661,37 @@
         return c;
       }
 
-      // Ottaa täyden tarkkuuden still-kuvan ImageCapturella (tai korkean tarkkuuden videoruudun)
+      // Mittaa kuvan terävyyden (Laplace-varianssi) keskialueelta
+      function measureCanvasSharpness(canvas) {
+        const w = 160;
+        const h = Math.max(40, Math.round((canvas.height / canvas.width) * 160));
+        const tmp = document.createElement('canvas');
+        tmp.width = w;
+        tmp.height = h;
+        const ctx = tmp.getContext('2d');
+        ctx.drawImage(canvas, 0, 0, w, h);
+        const d = ctx.getImageData(0, 0, w, h).data;
+        const g = new Float32Array(w * h);
+        for (let i = 0, p = 0; i < g.length; i++, p += 4) {
+          g[i] = 0.299 * d[p] + 0.587 * d[p + 1] + 0.114 * d[p + 2];
+        }
+        let sum = 0, sumSq = 0, cnt = 0;
+        const x0 = Math.floor(w * 0.2), x1 = Math.ceil(w * 0.8);
+        const y0 = Math.floor(h * 0.2), y1 = Math.ceil(h * 0.8);
+        for (let y = y0; y < y1; y++) {
+          for (let x = x0; x < x1; x++) {
+            const idx = y * w + x;
+            const lap = g[idx - 1] + g[idx + 1] + g[idx - w] + g[idx + w] - 4 * g[idx];
+            sum += lap;
+            sumSq += lap * lap;
+            cnt++;
+          }
+        }
+        const mean = sum / (cnt || 1);
+        return (sumSq / (cnt || 1)) - mean * mean;
+      }
+
+      // Ota mahdollisimman terävä kuva: AF-lukitus + ImageCapture tai 5-ruudun terävyysvalinta
       $('capturePhotoBtn').addEventListener('click', async () => {
         const video = $('cameraVideo');
         if (!video.videoWidth || !video.videoHeight) return;
@@ -2595,7 +2704,19 @@
         let capturedCanvas = null;
 
         try {
-          // 1. Ensisijaisesti laitteiston aito still-valokuva (ImageCapture.takePhoto)
+          // Jos kamera tukee tarkennusta eikä käyttäjä juuri napauttanut tai käyttänyt manuaalitarkennusta,
+          // laukaistaan nopea tarkennus ja odotetaan linssin asettumista.
+          const modes = Array.isArray(trackCaps.focusMode) ? trackCaps.focusMode : [];
+          if (!isManualFocusMode && modes.includes('single-shot') && (Date.now() - lastFocusTapTime > 2500)) {
+            try {
+              await activeVideoTrack.applyConstraints({
+                advanced: [{ focusMode: 'single-shot', ...(trackCaps.pointsOfInterest ? { pointsOfInterest: [{ x: 0.5, y: 0.5 }] } : {}) }]
+              });
+              await new Promise((r) => setTimeout(r, 420));
+            } catch (_) {}
+          }
+
+          // 1. Laitteiston aito still-valokuva (ImageCapture.takePhoto)
           if (imageCaptureObj && imageCaptureObj.takePhoto) {
             try {
               const photoSettings = {};
@@ -2609,16 +2730,25 @@
                 }
               }
               const blob = await imageCaptureObj.takePhoto(photoSettings);
-              const fullCanvas = await bitmapOrBlobToCanvas(blob, 3600);
-              capturedCanvas = cropSourceToA4Canvas(fullCanvas, fullCanvas.width, fullCanvas.height);
+              const fullCanvas = await bitmapOrBlobToCanvas(blob, 3800);
+              capturedCanvas = cropSourceToViewModeCanvas(fullCanvas, fullCanvas.width, fullCanvas.height);
             } catch (icErr) {
-              console.warn('ImageCapture fallback to video frame:', icErr);
+              console.warn('ImageCapture fallback to burst video frames:', icErr);
             }
           }
 
-          // 2. Varamenetelmä: videovirta korkeimmalla tarkkuudella
+          // 2. Varamenetelmä: napataan 5 ruutua ja valitaan niistä terävin (vähentää tärähdys- ja pakkausepäterävyyttä)
           if (!capturedCanvas) {
-            capturedCanvas = cropSourceToA4Canvas(video, video.videoWidth, video.videoHeight);
+            let bestScore = -1;
+            for (let k = 0; k < 5; k++) {
+              const frame = cropSourceToViewModeCanvas(video, video.videoWidth, video.videoHeight);
+              const score = measureCanvasSharpness(frame);
+              if (score > bestScore) {
+                bestScore = score;
+                capturedCanvas = frame;
+              }
+              if (k < 4) await new Promise((r) => setTimeout(r, 45));
+            }
           }
 
           stopCamera();
@@ -2631,12 +2761,13 @@
       });
 
       /* ---------------------------------------------------------
-         PAPERIN AUTOMAATTINEN TUNNISTUS, RAJAUS & PERSPEKTIIVISUORISTUS
+         RAJAUSNÄKYMÄ (NÄYTTÄÄ KOKO KUVAN + KULMAPIIRROT + SUURENNUSLASI)
       --------------------------------------------------------- */
       let cropSourceCanvas = null;
       let cropEditName = 'scan.jpg';
       let cropReplaceIndex = null;
       let cropFilter = 'enhanced';
+      let cropSharpness = 1.45;
       let cropCorners = [
         { x: 0.1, y: 0.1 },
         { x: 0.9, y: 0.1 },
@@ -2644,6 +2775,7 @@
         { x: 0.1, y: 0.9 }
       ];
       let activeHandleIdx = -1;
+      const CROP_PAD = 18; // Sisämarginaali kankaalla jotta kulmapisteet eivät koskaan leikkaudu reunoista
 
       async function openCropWithDataUrl(dataUrl, name, replaceIdx) {
         const img = await loadImageFromUrl(dataUrl);
@@ -2654,47 +2786,81 @@
         openCropEditor(c, name, replaceIdx);
       }
 
+      function setupCropCanvasResolution() {
+        const preview = $('cropCanvas');
+        const maxPreview = 1200;
+        const scale = Math.min(1, maxPreview / Math.max(cropSourceCanvas.width, cropSourceCanvas.height));
+        preview.width = Math.round(cropSourceCanvas.width * scale) + CROP_PAD * 2;
+        preview.height = Math.round(cropSourceCanvas.height * scale) + CROP_PAD * 2;
+      }
+
+      function fitCropCanvasToStage() {
+        const canvas = $('cropCanvas');
+        const stage = $('cropStage');
+        if (!cropSourceCanvas || !canvas.width || !canvas.height) return;
+        const availW = Math.max(220, stage.clientWidth - 22);
+        const availH = Math.max(200, Math.round(window.innerHeight * 0.54));
+        const scale = Math.min(availW / canvas.width, availH / canvas.height);
+        canvas.style.width = Math.round(canvas.width * scale) + 'px';
+        canvas.style.height = Math.round(canvas.height * scale) + 'px';
+      }
+
       function openCropEditor(sourceCanvas, name, replaceIdx) {
         cropSourceCanvas = sourceCanvas;
         cropEditName = name || `scan-${scanPages.length + 1}.jpg`;
         cropReplaceIndex = replaceIdx;
         activeHandleIdx = -1;
 
-        const preview = $('cropCanvas');
-        const maxPreview = 1100;
-        const scale = Math.min(1, maxPreview / Math.max(sourceCanvas.width, sourceCanvas.height));
-        preview.width = Math.round(sourceCanvas.width * scale);
-        preview.height = Math.round(sourceCanvas.height * scale);
-
+        setupCropCanvasResolution();
         cropCorners = detectDocumentCorners(sourceCanvas);
+
+        // Avataan modaali ENNEN mittojen laskentaa jotta stage.clientWidth > 0
         $('cropModal').classList.add('open');
+        fitCropCanvasToStage();
         drawCropCanvas();
+        requestAnimationFrame(() => {
+          fitCropCanvasToStage();
+          drawCropCanvas();
+        });
       }
+
+      window.addEventListener('resize', () => {
+        if ($('cropModal').classList.contains('open')) {
+          fitCropCanvasToStage();
+        }
+      });
 
       function drawCropCanvas() {
         const canvas = $('cropCanvas');
         const ctx = canvas.getContext('2d');
         const w = canvas.width;
         const h = canvas.height;
+        const imgW = w - CROP_PAD * 2;
+        const imgH = h - CROP_PAD * 2;
 
         ctx.clearRect(0, 0, w, h);
-        ctx.drawImage(cropSourceCanvas, 0, 0, w, h);
+        ctx.drawImage(cropSourceCanvas, CROP_PAD, CROP_PAD, imgW, imgH);
 
-        const pts = cropCorners.map((p) => ({ x: p.x * w, y: p.y * h }));
+        const pts = cropCorners.map((p) => ({
+          x: CROP_PAD + p.x * imgW,
+          y: CROP_PAD + p.y * imgH
+        }));
 
+        // Tummennetaan vain kuvan alueelta valinnan ulkopuolelta
         ctx.save();
         ctx.fillStyle = 'rgba(2, 6, 20, 0.62)';
         ctx.beginPath();
-        ctx.rect(0, 0, w, h);
+        ctx.rect(CROP_PAD, CROP_PAD, imgW, imgH);
         ctx.moveTo(pts[0].x, pts[0].y);
         for (let i = 1; i < 4; i++) ctx.lineTo(pts[i].x, pts[i].y);
         ctx.closePath();
         ctx.fill('evenodd');
         ctx.restore();
 
+        // Hohtava kehys paperin ympärille
         ctx.save();
         ctx.strokeStyle = '#22d3ee';
-        ctx.lineWidth = Math.max(2.5, w * 0.0038);
+        ctx.lineWidth = Math.max(2.5, w * 0.0036);
         ctx.shadowColor = '#22d3ee';
         ctx.shadowBlur = 14;
         ctx.beginPath();
@@ -2704,14 +2870,14 @@
         ctx.stroke();
         ctx.restore();
 
-        const r = Math.max(10, Math.min(18, w * 0.018));
+        const r = Math.max(11, Math.min(16, w * 0.016));
         pts.forEach((pt, idx) => {
           ctx.save();
           ctx.beginPath();
           ctx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
-          ctx.fillStyle = idx === activeHandleIdx ? '#34d399' : 'rgba(6, 182, 212, 0.92)';
+          ctx.fillStyle = idx === activeHandleIdx ? '#34d399' : 'rgba(6, 182, 212, 0.94)';
           ctx.shadowColor = idx === activeHandleIdx ? '#34d399' : '#22d3ee';
-          ctx.shadowBlur = 16;
+          ctx.shadowBlur = 14;
           ctx.fill();
           ctx.lineWidth = 3;
           ctx.strokeStyle = '#ffffff';
@@ -2723,12 +2889,15 @@
       function getPointerNorm(e) {
         const canvas = $('cropCanvas');
         const rect = canvas.getBoundingClientRect();
-        const nx = (e.clientX - rect.left) / rect.width;
-        const ny = (e.clientY - rect.top) / rect.height;
+        const cx = ((e.clientX - rect.left) / rect.width) * canvas.width;
+        const cy = ((e.clientY - rect.top) / rect.height) * canvas.height;
+        const imgW = canvas.width - CROP_PAD * 2;
+        const imgH = canvas.height - CROP_PAD * 2;
+        const nx = (cx - CROP_PAD) / imgW;
+        const ny = (cy - CROP_PAD) / imgH;
         return {
           x: Math.max(0, Math.min(1, nx)),
-          y: Math.max(0, Math.min(1, ny)),
-          rect
+          y: Math.max(0, Math.min(1, ny))
         };
       }
 
@@ -2764,7 +2933,7 @@
       cropCanvasEl.addEventListener('pointerdown', (e) => {
         const { x, y } = getPointerNorm(e);
         let bestIdx = -1;
-        let bestDist = 0.085;
+        let bestDist = 0.095;
         cropCorners.forEach((p, idx) => {
           const d = Math.hypot(p.x - x, p.y - y);
           if (d < bestDist) {
@@ -2808,6 +2977,15 @@
         });
       });
 
+      document.querySelectorAll('.pill-btn[data-sharp]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          cropSharpness = Number(btn.dataset.sharp) || 0.9;
+          document.querySelectorAll('.pill-btn[data-sharp]').forEach((b) => {
+            b.classList.toggle('active', b === btn);
+          });
+        });
+      });
+
       $('autoDetectCornersBtn').addEventListener('click', () => {
         cropCorners = detectDocumentCorners(cropSourceCanvas);
         drawCropCanvas();
@@ -2816,10 +2994,10 @@
 
       $('fullFrameCornersBtn').addEventListener('click', () => {
         cropCorners = [
-          { x: 0.01, y: 0.01 },
-          { x: 0.99, y: 0.01 },
-          { x: 0.99, y: 0.99 },
-          { x: 0.01, y: 0.99 }
+          { x: 0, y: 0 },
+          { x: 1, y: 0 },
+          { x: 1, y: 1 },
+          { x: 0, y: 1 }
         ];
         drawCropCanvas();
       });
@@ -2834,12 +3012,9 @@
         ctx.drawImage(cropSourceCanvas, -cropSourceCanvas.width / 2, -cropSourceCanvas.height / 2);
         cropSourceCanvas = c;
 
-        const preview = $('cropCanvas');
-        const scale = Math.min(1, 1100 / Math.max(c.width, c.height));
-        preview.width = Math.round(c.width * scale);
-        preview.height = Math.round(c.height * scale);
-
+        setupCropCanvasResolution();
         cropCorners = orderQuadClockwise(cropCorners.map((p) => ({ x: 1 - p.y, y: p.x })));
+        fitCropCanvasToStage();
         drawCropCanvas();
       });
 
@@ -2850,8 +3025,8 @@
 
       function commitCroppedPage(reopenCameraAfter = false) {
         const ordered = orderQuadClockwise(cropCorners);
-        const warped = warpPerspective(cropSourceCanvas, ordered, cropFilter);
-        const dataUrl = warped.toDataURL('image/jpeg', 0.94);
+        const warped = warpPerspective(cropSourceCanvas, ordered, cropFilter, cropSharpness);
+        const dataUrl = warped.toDataURL('image/jpeg', 0.95);
 
         if (cropReplaceIndex !== null && scanPages[cropReplaceIndex]) {
           scanPages[cropReplaceIndex].dataUrl = dataUrl;
@@ -3034,10 +3209,10 @@
         }
 
         return [
-          { x: 0.06, y: 0.06 },
-          { x: 0.94, y: 0.06 },
-          { x: 0.94, y: 0.94 },
-          { x: 0.06, y: 0.94 }
+          { x: 0.05, y: 0.05 },
+          { x: 0.95, y: 0.05 },
+          { x: 0.95, y: 0.95 },
+          { x: 0.05, y: 0.95 }
         ];
       }
 
@@ -3179,7 +3354,7 @@
       }
 
       /* ---------------------------------------------------------
-         PERSPEKTIIVISUORISTUS + TERÄVÖITYS
+         PERSPEKTIIVISUORISTUS (BIKUUBINEN CATMULL-ROM) + 5×5 UNSHARP MASK
       --------------------------------------------------------- */
       function solveLinearSystem8(A, b) {
         const n = 8;
@@ -3215,7 +3390,7 @@
         return solveLinearSystem8(A, b);
       }
 
-      function warpPerspective(srcCanvas, normCorners, filterMode) {
+      function warpPerspective(srcCanvas, normCorners, filterMode, sharpAmount = 1.45) {
         const sw = srcCanvas.width;
         const sh = srcCanvas.height;
         const srcPts = normCorners.map((p) => ({ x: p.x * (sw - 1), y: p.y * (sh - 1) }));
@@ -3229,8 +3404,14 @@
         let outW = Math.max(40, Math.round(Math.max(wTop, wBot)));
         let outH = Math.max(40, Math.round(Math.max(hLeft, hRight)));
 
-        const maxOut = 2400;
-        const scale = Math.min(1, maxOut / Math.max(outW, outH));
+        // Varmistetaan vähintään 1650 px pidemmälle sivulle jotta teksti on terävää PDF:ssä
+        const maxSide = Math.max(outW, outH);
+        const minOut = 1650;
+        const maxOut = 2600;
+        let scale = 1;
+        if (maxSide < minOut) scale = Math.min(2.4, minOut / maxSide);
+        else if (maxSide > maxOut) scale = maxOut / maxSide;
+
         outW = Math.round(outW * scale);
         outH = Math.round(outH * scale);
 
@@ -3253,37 +3434,64 @@
         const outImg = octx.createImageData(outW, outH);
         const dst = outImg.data;
 
+        const maxX = sw - 1;
+        const maxY = sh - 1;
+        const stride = sw * 4;
+
+        // Bikuubinen Catmull-Rom-interpolaatio teräviä reunoja varten
         for (let y = 0; y < outH; y++) {
           for (let x = 0; x < outW; x++) {
             const denom = h6 * x + h7 * y + 1;
             const sx = (h0 * x + h1 * y + h2) / denom;
             const sy = (h3 * x + h4 * y + h5) / denom;
 
-            const x0 = Math.max(0, Math.min(sw - 2, sx | 0));
-            const y0 = Math.max(0, Math.min(sh - 2, sy | 0));
-            const fx = Math.max(0, Math.min(1, sx - x0));
-            const fy = Math.max(0, Math.min(1, sy - y0));
+            const xi = sx | 0;
+            const yi = sy | 0;
+            const tx = Math.max(0, Math.min(1, sx - xi));
+            const ty = Math.max(0, Math.min(1, sy - yi));
 
-            const i00 = (y0 * sw + x0) * 4;
-            const i10 = i00 + 4;
-            const i01 = i00 + sw * 4;
-            const i11 = i01 + 4;
+            const tx2 = tx * tx;
+            const tx3 = tx2 * tx;
+            const wx0 = -0.5 * tx + tx2 - 0.5 * tx3;
+            const wx1 = 1.0 - 2.5 * tx2 + 1.5 * tx3;
+            const wx2 = 0.5 * tx + 2.0 * tx2 - 1.5 * tx3;
+            const wx3 = -0.5 * tx2 + 0.5 * tx3;
 
-            const w00 = (1 - fx) * (1 - fy);
-            const w10 = fx * (1 - fy);
-            const w01 = (1 - fx) * fy;
-            const w11 = fx * fy;
+            const ty2 = ty * ty;
+            const ty3 = ty2 * ty;
+            const wy0 = -0.5 * ty + ty2 - 0.5 * ty3;
+            const wy1 = 1.0 - 2.5 * ty2 + 1.5 * ty3;
+            const wy2 = 0.5 * ty + 2.0 * ty2 - 1.5 * ty3;
+            const wy3 = -0.5 * ty2 + 0.5 * ty3;
 
+            const x0 = xi - 1 < 0 ? 0 : xi - 1 > maxX ? maxX : xi - 1;
+            const x1 = xi < 0 ? 0 : xi > maxX ? maxX : xi;
+            const x2 = xi + 1 < 0 ? 0 : xi + 1 > maxX ? maxX : xi + 1;
+            const x3 = xi + 2 < 0 ? 0 : xi + 2 > maxX ? maxX : xi + 2;
+
+            const y0 = (yi - 1 < 0 ? 0 : yi - 1 > maxY ? maxY : yi - 1) * stride;
+            const y1 = (yi < 0 ? 0 : yi > maxY ? maxY : yi) * stride;
+            const y2 = (yi + 1 < 0 ? 0 : yi + 1 > maxY ? maxY : yi + 1) * stride;
+            const y3 = (yi + 2 < 0 ? 0 : yi + 2 > maxY ? maxY : yi + 2) * stride;
+
+            const ox0 = x0 * 4, ox1 = x1 * 4, ox2 = x2 * 4, ox3 = x3 * 4;
             const di = (y * outW + x) * 4;
-            dst[di] = srcData[i00] * w00 + srcData[i10] * w10 + srcData[i01] * w01 + srcData[i11] * w11;
-            dst[di + 1] = srcData[i00 + 1] * w00 + srcData[i10 + 1] * w10 + srcData[i01 + 1] * w01 + srcData[i11 + 1] * w11;
-            dst[di + 2] = srcData[i00 + 2] * w00 + srcData[i10 + 2] * w10 + srcData[i01 + 2] * w01 + srcData[i11 + 2] * w11;
+
+            for (let c = 0; c < 3; c++) {
+              const r0 = srcData[y0 + ox0 + c] * wx0 + srcData[y0 + ox1 + c] * wx1 + srcData[y0 + ox2 + c] * wx2 + srcData[y0 + ox3 + c] * wx3;
+              const r1 = srcData[y1 + ox0 + c] * wx0 + srcData[y1 + ox1 + c] * wx1 + srcData[y1 + ox2 + c] * wx2 + srcData[y1 + ox3 + c] * wx3;
+              const r2 = srcData[y2 + ox0 + c] * wx0 + srcData[y2 + ox1 + c] * wx1 + srcData[y2 + ox2 + c] * wx2 + srcData[y2 + ox3 + c] * wx3;
+              const r3 = srcData[y3 + ox0 + c] * wx0 + srcData[y3 + ox1 + c] * wx1 + srcData[y3 + ox2 + c] * wx2 + srcData[y3 + ox3 + c] * wx3;
+              const val = r0 * wy0 + r1 * wy1 + r2 * wy2 + r3 * wy3;
+              dst[di + c] = val < 0 ? 0 : val > 255 ? 255 : val;
+            }
             dst[di + 3] = 255;
           }
         }
 
-        // Terävöitys (Unsharp Mask) parantaa tekstin luettavuutta
-        applyUnsharpMask(dst, outW, outH, filterMode === 'original' ? 0.3 : 0.55);
+        // 5x5 Unsharp Mask (kohdistuu oikeaan ~2px optiseen sumennukseen)
+        const effSharp = filterMode === 'original' ? sharpAmount * 0.65 : sharpAmount;
+        applyGaussianUnsharp5x5(dst, outW, outH, effSharp);
 
         if (filterMode === 'enhanced') {
           applyColorDocumentFilter(dst, outW, outH);
@@ -3295,29 +3503,65 @@
         return outCanvas;
       }
 
-      function applyUnsharpMask(data, w, h, amount = 0.45) {
-        if (w < 3 || h < 3 || amount <= 0) return;
-        const copy = new Uint8ClampedArray(data);
-        const rowStride = w * 4;
-        for (let y = 1; y < h - 1; y++) {
-          const row = y * rowStride;
-          for (let x = 1; x < w - 1; x++) {
-            const p = row + x * 4;
+      // Separable 5x5 Gaussin Unsharp Mask [1, 4, 6, 4, 1] / 16
+      function applyGaussianUnsharp5x5(data, w, h, amount = 1.2) {
+        if (w < 5 || h < 5 || amount <= 0) return;
+        const len = w * h * 3;
+        const blurH = new Float32Array(len);
+
+        // Vaakasumennus
+        for (let y = 0; y < h; y++) {
+          const rowIn = y * w * 4;
+          const rowOut = y * w * 3;
+          for (let x = 0; x < w; x++) {
+            const xm2 = x - 2 < 0 ? 0 : x - 2;
+            const xm1 = x - 1 < 0 ? 0 : x - 1;
+            const xp1 = x + 1 >= w ? w - 1 : x + 1;
+            const xp2 = x + 2 >= w ? w - 1 : x + 2;
+            const o = rowOut + x * 3;
             for (let c = 0; c < 3; c++) {
-              const center = copy[p + c];
-              const avg4 = (
-                copy[p - 4 + c] +
-                copy[p + 4 + c] +
-                copy[p - rowStride + c] +
-                copy[p + rowStride + c]
-              ) * 0.25;
-              const val = center + amount * (center - avg4);
-              data[p + c] = val < 0 ? 0 : val > 255 ? 255 : val;
+              blurH[o + c] = (
+                data[rowIn + xm2 * 4 + c] +
+                4 * data[rowIn + xm1 * 4 + c] +
+                6 * data[rowIn + x * 4 + c] +
+                4 * data[rowIn + xp1 * 4 + c] +
+                data[rowIn + xp2 * 4 + c]
+              ) * 0.0625;
+            }
+          }
+        }
+
+        // Pystysumennus + terävöitys
+        for (let y = 0; y < h; y++) {
+          const ym2 = (y - 2 < 0 ? 0 : y - 2) * w * 3;
+          const ym1 = (y - 1 < 0 ? 0 : y - 1) * w * 3;
+          const y0 = y * w * 3;
+          const yp1 = (y + 1 >= h ? h - 1 : y + 1) * w * 3;
+          const yp2 = (y + 2 >= h ? h - 1 : y + 2) * w * 3;
+          const rowData = y * w * 4;
+
+          for (let x = 0; x < w; x++) {
+            const xo = x * 3;
+            const di = rowData + x * 4;
+            for (let c = 0; c < 3; c++) {
+              const blurV = (
+                blurH[ym2 + xo + c] +
+                4 * blurH[ym1 + xo + c] +
+                6 * blurH[y0 + xo + c] +
+                4 * blurH[yp1 + xo + c] +
+                blurH[yp2 + xo + c]
+              ) * 0.0625;
+              const orig = data[di + c];
+              const diff = orig - blurV;
+              // Pieni kynnysarvo (3) estää tasaisen paperikohinan vahvistumisen
+              const val = Math.abs(diff) > 3 ? orig + amount * diff : orig;
+              data[di + c] = val < 0 ? 0 : val > 255 ? 255 : val;
             }
           }
         }
       }
 
+      // Kirkastaa paperin valkoiseksi ja tummentaa tekstin selkeäksi väreissä
       function applyColorDocumentFilter(data, w, h) {
         const lumHist = new Uint32Array(256);
         const total = w * h;
@@ -3325,21 +3569,23 @@
           const lum = (0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]) | 0;
           lumHist[Math.min(255, lum)]++;
         }
-        let acc = 0, whitePt = 220;
-        const target = total * 0.85;
+        let acc = 0, whitePt = 220, blackPt = 20;
+        const targetWhite = total * 0.84;
+        const targetBlack = total * 0.03;
         for (let b = 0; b < 256; b++) {
           acc += lumHist[b];
-          if (acc >= target) {
+          if (acc >= targetBlack && blackPt === 20) blackPt = Math.min(85, b);
+          if (acc >= targetWhite) {
             whitePt = Math.max(145, b);
             break;
           }
         }
-        const gain = 255 / whitePt;
+        const span = Math.max(40, whitePt - blackPt);
         for (let i = 0; i < data.length; i += 4) {
           for (let c = 0; c < 3; c++) {
-            let v = data[i + c] * gain;
-            v = ((v / 255 - 0.5) * 1.16 + 0.5) * 255;
-            data[i + c] = Math.max(0, Math.min(255, v));
+            let v = ((data[i + c] - blackPt) / span) * 255;
+            v = ((v / 255 - 0.5) * 1.24 + 0.5) * 255;
+            data[i + c] = v < 0 ? 0 : v > 255 ? 255 : v;
           }
         }
       }
@@ -3364,7 +3610,7 @@
           }
         }
 
-        const r = Math.max(12, Math.round(Math.min(w, h) * 0.025));
+        const r = Math.max(14, Math.round(Math.min(w, h) * 0.025));
         for (let y = 0; y < h; y++) {
           const y1 = Math.max(0, y - r);
           const y2 = Math.min(h - 1, y + r);
@@ -3378,11 +3624,11 @@
                         sat[y1 * stride + x1];
             const mean = sum / area;
             const g = gray[y * w + x];
-            const diff = g - (mean - 11);
+            const diff = g - (mean - 10);
             let out;
-            if (diff >= 5) out = 255;
-            else if (diff <= -14) out = 0;
-            else out = Math.round(((diff + 14) / 19) * 255);
+            if (diff >= 4) out = 255;
+            else if (diff <= -13) out = 0;
+            else out = Math.round(((diff + 13) / 17) * 255);
 
             const p = (y * w + x) * 4;
             data[p] = out;
@@ -3895,7 +4141,6 @@
         const dpr = Math.min(2, window.devicePixelRatio || 1);
 
         for (let p = 1; p <= total; p++) {
-          // Varmistetaan ettei modaali ole suljettu kesken renderöinnin
           if (previewState.pdfDoc !== pdfDoc) return;
 
           const page = await pdfDoc.getPage(p);

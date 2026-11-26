@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fi">
 <head>
@@ -364,6 +363,17 @@
       filter: brightness(1.06);
     }
 
+    .btn-indigo {
+      border-color: rgba(129, 140, 248, 0.45);
+      color: #c7d2fe;
+      background: rgba(67, 56, 202, 0.22);
+    }
+
+    .btn-indigo:hover:not(:disabled) {
+      border-color: var(--indigo);
+      box-shadow: 0 0 20px rgba(129, 140, 248, 0.35);
+    }
+
     .btn-danger {
       border-color: rgba(251, 113, 133, 0.35);
       color: #fda4af;
@@ -488,7 +498,7 @@
     /* Sivujen ruudukko (Kuvat -> PDF) */
     .pages-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
       gap: 16px;
       margin-top: 20px;
     }
@@ -564,10 +574,11 @@
       text-overflow: ellipsis;
     }
 
+    /* 5 painiketta: Vasen, Oikea, Kierrä, Rajaa, Poista */
     .page-actions {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
     }
 
     .icon-btn {
@@ -576,7 +587,7 @@
       background: rgba(15, 23, 42, 0.85);
       color: var(--text-main);
       border-radius: 8px;
-      padding: 7px;
+      padding: 7px 4px;
       cursor: pointer;
       display: grid;
       place-items: center;
@@ -753,7 +764,7 @@
       color: var(--text-main);
     }
 
-    /* Modaalit (Kamera & Rajaus/Suoristus) */
+    /* Modaalit (Kamera, Rajaus, PDF-esikatselu) */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -791,7 +802,8 @@
       gap: 14px;
     }
 
-    .modal-box.camera-modal-box {
+    .modal-box.camera-modal-box,
+    .modal-box.preview-modal-box {
       max-width: 1080px;
       width: 96vw;
     }
@@ -839,13 +851,11 @@
       transition: width 0.25s ease, aspect-ratio 0.25s ease;
     }
 
-    /* A4 Pysty (210 x 297) — mahdollisimman suuri ruudulla */
     .camera-stage.a4-portrait {
       width: min(100%, calc(66vh * 210 / 297));
       aspect-ratio: 210 / 297;
     }
 
-    /* A4 Vaaka (297 x 210) */
     .camera-stage.a4-landscape {
       width: min(100%, calc(64vh * 297 / 210));
       aspect-ratio: 297 / 210;
@@ -866,7 +876,6 @@
       pointer-events: none;
     }
 
-    /* Kulmamerkinnät A4-kehykseen */
     .camera-guide::before {
       content: 'A4';
       position: absolute;
@@ -898,7 +907,6 @@
       pointer-events: none;
     }
 
-    /* Tarkennusrengas (Tap-to-focus) */
     .focus-ring {
       position: absolute;
       width: 72px;
@@ -931,7 +939,6 @@
       100% { opacity: 0; transform: translate(-50%, -50%) scale(1.04); }
     }
 
-    /* Kameran tarkennuspalkki */
     .camera-focus-bar {
       display: flex;
       flex-wrap: wrap;
@@ -974,6 +981,12 @@
       padding: 4px 10px;
       border-radius: 999px;
       white-space: nowrap;
+    }
+
+    .focus-status-pill.warn {
+      color: var(--amber);
+      background: rgba(251, 191, 36, 0.12);
+      border-color: rgba(251, 191, 36, 0.32);
     }
 
     .camera-error {
@@ -1052,6 +1065,63 @@
       box-shadow: 0 0 14px rgba(56, 189, 248, 0.28);
     }
 
+    /* PDF-ESIKATSELUMODAALI */
+    .preview-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 14px;
+      background: rgba(6, 10, 24, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: var(--radius-sm);
+    }
+
+    .preview-zoom-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .preview-scroll {
+      height: 66vh;
+      overflow: auto;
+      background: #03060f;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: var(--radius-md);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .preview-page-sheet {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      max-width: 100%;
+    }
+
+    .preview-page-sheet canvas {
+      display: block;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.75), 0 0 20px rgba(56, 189, 248, 0.12);
+    }
+
+    .preview-page-caption {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.85);
+      padding: 3px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+    }
+
     .modal-footer {
       display: flex;
       flex-wrap: wrap;
@@ -1062,7 +1132,6 @@
       border-top: 1px solid rgba(148, 163, 184, 0.12);
     }
 
-    /* Tyhjä tila */
     .empty-hint {
       text-align: center;
       padding: 26px 12px;
@@ -1070,7 +1139,6 @@
       font-size: 0.9rem;
     }
 
-    /* Toast-ilmoitukset */
     .toast-stack {
       position: fixed;
       bottom: 22px;
@@ -1111,7 +1179,8 @@
       .glass-card { padding: 16px; }
       .tab-btn { flex: 1; justify-content: center; font-size: 0.8rem; padding: 9px 10px; }
       .pages-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-      .modal-box.camera-modal-box { padding: 14px; width: 98vw; }
+      .modal-box.camera-modal-box,
+      .modal-box.preview-modal-box { padding: 14px; width: 98vw; }
     }
   </style>
 </head>
@@ -1250,6 +1319,13 @@
               <option value="42" data-i18n="optMarginNorm">Normaali marginaali</option>
             </select>
           </div>
+          <button class="btn btn-indigo" id="previewScanPdfBtn" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <span data-i18n="btnPreviewPdf">Esikatsele PDF</span>
+          </button>
           <button class="btn btn-emerald" id="exportScanPdfBtn" disabled>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
@@ -1300,6 +1376,13 @@
             <label for="mergePdfName" data-i18n="lblMergedName">Yhdistetyn PDF:n nimi</label>
             <input type="text" id="mergePdfName" class="input" value="yhdistetty-asiakirja" />
           </div>
+          <button class="btn btn-indigo" id="previewMergePdfBtn" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <span data-i18n="btnPreviewPdf">Esikatsele PDF</span>
+          </button>
           <button class="btn btn-emerald" id="exportMergeBtn" disabled>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
@@ -1358,6 +1441,13 @@
               <label for="splitPdfName" data-i18n="lblSplitName">Uuden PDF:n nimi</label>
               <input type="text" id="splitPdfName" class="input" value="erotetut-sivut" />
             </div>
+            <button class="btn btn-indigo" id="previewSplitPdfBtn" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <span data-i18n="btnPreviewSelected">Esikatsele valitut</span>
+            </button>
             <button class="btn btn-emerald" id="exportSplitCombinedBtn" disabled data-i18n="btnSaveSelectedOne">
               Tallenna valitut yhtenä PDF:nä...
             </button>
@@ -1420,7 +1510,7 @@
       </div>
 
       <div class="modal-footer">
-        <span style="font-size:0.84rem; color:var(--text-muted);" data-i18n="camTip">
+        <span style="font-size:0.84rem; color:var(--text-muted);" id="camTipText" data-i18n="camTip">
           Vinkki: Tumma pöytä paperin alla helpottaa reunojen tunnistusta. Napauta ruutua tarkentaaksesi.
         </span>
         <button class="btn btn-primary" id="capturePhotoBtn">
@@ -1428,7 +1518,7 @@
             <circle cx="12" cy="12" r="9"/>
             <circle cx="12" cy="12" r="4" fill="currentColor"/>
           </svg>
-          <span data-i18n="btnCapture">Ota A4-kuva</span>
+          <span id="captureBtnLabel" data-i18n="btnCapture">Ota A4-kuva</span>
         </button>
       </div>
     </div>
@@ -1484,6 +1574,45 @@
     </div>
   </div>
 
+  <!-- MODAALI 3: PDF-KOKONAISUUDEN ESIKATSELU -->
+  <div class="modal-backdrop" id="pdfPreviewModal" role="dialog" aria-modal="true" aria-labelledby="pdfPreviewTitle">
+    <div class="modal-box preview-modal-box">
+      <div class="modal-head">
+        <h2 id="pdfPreviewTitle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <span data-i18n="pdfPreviewTitle">PDF-kokonaisuuden esikatselu</span>
+          <span class="badge" id="pdfPreviewMeta">—</span>
+        </h2>
+        <button class="btn btn-sm btn-danger" id="closePreviewBtn" data-i18n="btnClose">Sulje</button>
+      </div>
+
+      <div class="preview-toolbar">
+        <div class="preview-zoom-controls">
+          <button class="btn btn-sm" id="previewZoomOutBtn" title="Zoom -">−</button>
+          <button class="btn btn-sm" id="previewZoomResetBtn">100%</button>
+          <button class="btn btn-sm" id="previewZoomInBtn" title="Zoom +">+</button>
+        </div>
+        <span style="font-size:0.82rem; color:var(--text-muted);" id="previewFileLabel"></span>
+      </div>
+
+      <div class="preview-scroll" id="pdfPreviewContainer"></div>
+
+      <div class="modal-footer">
+        <button class="btn" id="closePreviewFooterBtn" data-i18n="btnClose">Sulje</button>
+        <button class="btn btn-emerald" id="saveFromPreviewBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+          </svg>
+          <span data-i18n="btnSaveThisPdf">Tallenna tämä PDF...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Ilmoitukset -->
   <div class="toast-stack" id="toastStack"></div>
 
@@ -1524,6 +1653,8 @@
           optMargin0: 'Ei marginaalia',
           optMarginSmall: 'Pieni marginaali',
           optMarginNorm: 'Normaali marginaali',
+          btnPreviewPdf: 'Esikatsele PDF',
+          btnPreviewSelected: 'Esikatsele valitut',
           btnSavePdf: 'Tallenna PDF:nä...',
           mergeHeading: 'Yhdistä erillisiä PDF-tiedostoja',
           clearList: 'Tyhjennä lista',
@@ -1558,8 +1689,11 @@
           focusAutoActive: 'Automaattitarkennus',
           focusManualActive: 'Manuaalitarkennus',
           focusTriggered: 'Tarkennettu kohteeseen',
+          focusFixed: 'Kiinteä tarkennus (ei AF-moottoria)',
           camTip: 'Vinkki: Tumma pöytä paperin alla helpottaa reunojen tunnistusta. Napauta ruutua tarkentaaksesi.',
+          camTipFixed: 'Huom: Kamera ei tue ohjelmallista tarkennusta — pidä paperi väh. 35 cm etäisyydellä hyvässä valossa.',
           btnCapture: 'Ota A4-kuva',
+          btnCapturing: 'Otetaan tarkka kuva...',
           cropModalTitle: 'Rajaa & Suorista paperi',
           btnAutoDetect: 'Auto-tunnistus',
           btnFullFrame: 'Koko kuva',
@@ -1572,13 +1706,19 @@
           cropDragHint: 'Vedä 4 sinistä kulmapistettä täsmälleen paperin kulmiin.',
           btnCropNext: 'Suorista & ota seuraava kuva',
           btnCropApply: 'Suorista ja lisää PDF-jonoon',
+          pdfPreviewTitle: 'PDF-kokonaisuuden esikatselu',
+          btnSaveThisPdf: 'Tallenna tämä PDF...',
+          previewLoading: 'Luodaan esikatselua...',
+          previewFallback: 'PDF-esikatselu muodostettu ({size}). Voit tallentaa tiedoston alta.',
           noFile: 'Ei tiedostoa',
           pageOne: '1 sivu',
           pageMany: '{n} sivua',
           fileOne: '1 tiedosto',
           fileMany: '{n} tiedostoa',
           pageLabel: 'Sivu {n}',
+          pageOf: 'Sivu {n} / {total}',
           moveLeft: 'Siirrä vasemmalle',
+          moveRight: 'Siirrä oikealle',
           rotateTitle: 'Kierrä 90°',
           recropTitle: 'Rajaa & suorista uudelleen',
           deleteTitle: 'Poista sivu',
@@ -1632,6 +1772,8 @@
           optMargin0: 'No margin',
           optMarginSmall: 'Small margin',
           optMarginNorm: 'Normal margin',
+          btnPreviewPdf: 'Preview PDF',
+          btnPreviewSelected: 'Preview selected',
           btnSavePdf: 'Save as PDF...',
           mergeHeading: 'Merge Separate PDF Files',
           clearList: 'Clear list',
@@ -1666,8 +1808,11 @@
           focusAutoActive: 'Autofocus active',
           focusManualActive: 'Manual focus',
           focusTriggered: 'Focused on target',
+          focusFixed: 'Fixed focus (no AF motor)',
           camTip: 'Tip: A dark desk under white paper improves edge detection. Tap the preview to focus.',
+          camTipFixed: 'Note: Camera reports no autofocus control — keep paper at least 35 cm away in good light.',
           btnCapture: 'Capture A4 photo',
+          btnCapturing: 'Capturing sharp photo...',
           cropModalTitle: 'Crop & Straighten Paper',
           btnAutoDetect: 'Auto-detect',
           btnFullFrame: 'Full frame',
@@ -1680,13 +1825,19 @@
           cropDragHint: 'Drag the 4 blue corner points to the exact corners of the paper.',
           btnCropNext: 'Straighten & take next photo',
           btnCropApply: 'Straighten & add to PDF queue',
+          pdfPreviewTitle: 'Complete PDF Preview',
+          btnSaveThisPdf: 'Save this PDF...',
+          previewLoading: 'Generating preview...',
+          previewFallback: 'PDF ready ({size}). Use the button below to save.',
           noFile: 'No file',
           pageOne: '1 page',
           pageMany: '{n} pages',
           fileOne: '1 file',
           fileMany: '{n} files',
           pageLabel: 'Page {n}',
+          pageOf: 'Page {n} / {total}',
           moveLeft: 'Move left',
+          moveRight: 'Move right',
           rotateTitle: 'Rotate 90°',
           recropTitle: 'Crop & straighten again',
           deleteTitle: 'Delete page',
@@ -1746,15 +1897,13 @@
         });
 
         document.querySelectorAll('[data-i18n]').forEach((el) => {
-          const key = el.dataset.i18n;
-          el.textContent = t(key);
+          el.textContent = t(el.dataset.i18n);
         });
 
         document.querySelectorAll('[data-i18n-ph]').forEach((el) => {
           el.placeholder = t(el.dataset.i18nPh);
         });
 
-        // Päivitetään oletustiedostonimet vain jos käyttäjä ei ole muokannut niitä
         if ($('scanPdfName').value === I18N[prevLang].defaultScanName) {
           $('scanPdfName').value = t('defaultScanName');
         }
@@ -1869,6 +2018,7 @@
         $('scanEmptyHint').classList.toggle('hidden', count > 0);
         $('clearScanBtn').classList.toggle('hidden', count === 0);
         $('exportScanPdfBtn').disabled = count === 0;
+        $('previewScanPdfBtn').disabled = count === 0;
 
         grid.innerHTML = '';
         scanPages.forEach((page, index) => {
@@ -1889,6 +2039,9 @@
             <div class="page-actions">
               <button class="icon-btn" title="${t('moveLeft')}" ${index === 0 ? 'disabled' : ''} data-act="left">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="icon-btn" title="${t('moveRight')}" ${index === count - 1 ? 'disabled' : ''} data-act="right">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
               </button>
               <button class="icon-btn" title="${t('rotateTitle')}" data-act="rotate">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
@@ -1924,6 +2077,9 @@
               if (act === 'left' && index > 0) {
                 [scanPages[index - 1], scanPages[index]] = [scanPages[index], scanPages[index - 1]];
                 updateScanUI();
+              } else if (act === 'right' && index < scanPages.length - 1) {
+                [scanPages[index], scanPages[index + 1]] = [scanPages[index + 1], scanPages[index]];
+                updateScanUI();
               } else if (act === 'rotate') {
                 rotateScanPage(index);
               } else if (act === 'crop') {
@@ -1949,7 +2105,7 @@
         ctx.translate(c.width / 2, c.height / 2);
         ctx.rotate(Math.PI / 2);
         ctx.drawImage(img, -img.width / 2, -img.height / 2);
-        page.dataUrl = c.toDataURL('image/jpeg', 0.92);
+        page.dataUrl = c.toDataURL('image/jpeg', 0.93);
         page.width = c.width;
         page.height = c.height;
         updateScanUI();
@@ -1964,12 +2120,12 @@
         });
       }
 
-      async function fileToNormalizedCanvas(file, maxDim = 2400) {
+      async function bitmapOrBlobToCanvas(source, maxDim = 2800) {
         let bitmap;
         if (window.createImageBitmap) {
-          bitmap = await createImageBitmap(file);
+          bitmap = await createImageBitmap(source);
         } else {
-          const url = URL.createObjectURL(file);
+          const url = URL.createObjectURL(source);
           bitmap = await loadImageFromUrl(url);
           URL.revokeObjectURL(url);
         }
@@ -1993,18 +2149,18 @@
         }
 
         if (openInCropIfSingle && imgFiles.length >= 1) {
-          const canvas = await fileToNormalizedCanvas(imgFiles[0]);
+          const canvas = await bitmapOrBlobToCanvas(imgFiles[0]);
           openCropEditor(canvas, imgFiles[0].name, null);
           return;
         }
 
         for (const file of imgFiles) {
           try {
-            const canvas = await fileToNormalizedCanvas(file);
+            const canvas = await bitmapOrBlobToCanvas(file);
             scanPages.push({
               id: uid(),
               name: file.name,
-              dataUrl: canvas.toDataURL('image/jpeg', 0.92),
+              dataUrl: canvas.toDataURL('image/jpeg', 0.93),
               width: canvas.width,
               height: canvas.height
             });
@@ -2048,61 +2204,80 @@
         updateScanUI();
       });
 
+      async function buildScanPdfBytes() {
+        const pdfDoc = await PDFLib.PDFDocument.create();
+        const sizeMode = $('pageSizeSelect').value;
+        const margin = Number($('pageMarginSelect').value) || 0;
+        const A4_W = 595.28;
+        const A4_H = 841.89;
+
+        for (const item of scanPages) {
+          const resp = await fetch(item.dataUrl);
+          const imgBytes = await resp.arrayBuffer();
+          const embedded = item.dataUrl.startsWith('data:image/png')
+            ? await pdfDoc.embedPng(imgBytes)
+            : await pdfDoc.embedJpg(imgBytes);
+
+          const iw = embedded.width;
+          const ih = embedded.height;
+
+          let pw, ph;
+          if (sizeMode === 'fit') {
+            const scale = Math.min(1, 842 / Math.max(iw, ih));
+            pw = iw * scale + margin * 2;
+            ph = ih * scale + margin * 2;
+          } else if (sizeMode === 'a4-portrait') {
+            pw = A4_W;
+            ph = A4_H;
+          } else if (sizeMode === 'a4-landscape') {
+            pw = A4_H;
+            ph = A4_W;
+          } else {
+            if (iw > ih) {
+              pw = A4_H;
+              ph = A4_W;
+            } else {
+              pw = A4_W;
+              ph = A4_H;
+            }
+          }
+
+          const page = pdfDoc.addPage([pw, ph]);
+          const availW = Math.max(10, pw - margin * 2);
+          const availH = Math.max(10, ph - margin * 2);
+          const ratio = Math.min(availW / iw, availH / ih);
+          const drawW = iw * ratio;
+          const drawH = ih * ratio;
+          const x = (pw - drawW) / 2;
+          const y = (ph - drawH) / 2;
+
+          page.drawImage(embedded, { x, y, width: drawW, height: drawH });
+        }
+
+        return await pdfDoc.save();
+      }
+
+      $('previewScanPdfBtn').addEventListener('click', async () => {
+        if (!scanPages.length) return;
+        const btn = $('previewScanPdfBtn');
+        btn.disabled = true;
+        try {
+          const bytes = await buildScanPdfBytes();
+          await openPdfPreview(bytes, $('scanPdfName').value || t('defaultScanName'));
+        } catch (err) {
+          console.error(err);
+          toast(t('toastPdfCreateFail', { err: err.message }), 'error');
+        } finally {
+          btn.disabled = scanPages.length === 0;
+        }
+      });
+
       $('exportScanPdfBtn').addEventListener('click', async () => {
         if (!scanPages.length) return;
         const btn = $('exportScanPdfBtn');
         btn.disabled = true;
         try {
-          const pdfDoc = await PDFLib.PDFDocument.create();
-          const sizeMode = $('pageSizeSelect').value;
-          const margin = Number($('pageMarginSelect').value) || 0;
-          const A4_W = 595.28;
-          const A4_H = 841.89;
-
-          for (const item of scanPages) {
-            const resp = await fetch(item.dataUrl);
-            const imgBytes = await resp.arrayBuffer();
-            const embedded = item.dataUrl.startsWith('data:image/png')
-              ? await pdfDoc.embedPng(imgBytes)
-              : await pdfDoc.embedJpg(imgBytes);
-
-            const iw = embedded.width;
-            const ih = embedded.height;
-
-            let pw, ph;
-            if (sizeMode === 'fit') {
-              const scale = Math.min(1, 842 / Math.max(iw, ih));
-              pw = iw * scale + margin * 2;
-              ph = ih * scale + margin * 2;
-            } else if (sizeMode === 'a4-portrait') {
-              pw = A4_W;
-              ph = A4_H;
-            } else if (sizeMode === 'a4-landscape') {
-              pw = A4_H;
-              ph = A4_W;
-            } else {
-              if (iw > ih) {
-                pw = A4_H;
-                ph = A4_W;
-              } else {
-                pw = A4_W;
-                ph = A4_H;
-              }
-            }
-
-            const page = pdfDoc.addPage([pw, ph]);
-            const availW = Math.max(10, pw - margin * 2);
-            const availH = Math.max(10, ph - margin * 2);
-            const ratio = Math.min(availW / iw, availH / ih);
-            const drawW = iw * ratio;
-            const drawH = ih * ratio;
-            const x = (pw - drawW) / 2;
-            const y = (ph - drawH) / 2;
-
-            page.drawImage(embedded, { x, y, width: drawW, height: drawH });
-          }
-
-          const pdfBytes = await pdfDoc.save();
+          const pdfBytes = await buildScanPdfBytes();
           await savePdfBytes(pdfBytes, $('scanPdfName').value || t('defaultScanName'));
         } catch (err) {
           console.error(err);
@@ -2113,7 +2288,7 @@
       });
 
       /* ---------------------------------------------------------
-         SUURI A4-KAMERA & TARKENNUSJÄRJESTELMÄ
+         SUURI A4-KAMERA, IMAGECAPTURE-KUVAUS & TARKENNUS
       --------------------------------------------------------- */
       let cameraStream = null;
       let videoDevices = [];
@@ -2122,6 +2297,7 @@
       let torchEnabled = false;
       let activeVideoTrack = null;
       let trackCaps = {};
+      let imageCaptureObj = null;
 
       function updateCameraOrientButton() {
         const stage = $('cameraStage');
@@ -2142,16 +2318,40 @@
         updateCameraOrientButton();
       });
 
-      function setupFocusAndTorchCapabilities(track) {
+      function updateCameraInfoPill(statusText = null, isWarn = false) {
+        const video = $('cameraVideo');
+        const pill = $('focusStatusPill');
+        const res = (video.videoWidth && video.videoHeight)
+          ? `${video.videoWidth}×${video.videoHeight}`
+          : '';
+        const base = statusText || (Array.isArray(trackCaps.focusMode) && trackCaps.focusMode.length
+          ? t('focusAutoActive')
+          : t('focusFixed'));
+        pill.textContent = res ? `${res} • ${base}` : base;
+        pill.classList.toggle('warn', isWarn);
+      }
+
+      async function setupFocusAndTorchCapabilities(track) {
         activeVideoTrack = track;
         trackCaps = (track && track.getCapabilities) ? track.getCapabilities() : {};
         torchEnabled = false;
         $('torchBtn').classList.remove('btn-active-glow');
 
-        // Salamavalo / taskulamppu
+        // Luodaan ImageCapture todellista täyden tarkkuuden still-kuvausta varten
+        imageCaptureObj = ('ImageCapture' in window && track) ? new ImageCapture(track) : null;
+
+        // Pyydetään kameran korkein natiiviresoluutio still/video-käyttöön
+        if (track && track.applyConstraints && trackCaps.width && trackCaps.height) {
+          try {
+            await track.applyConstraints({
+              width: { ideal: trackCaps.width.max },
+              height: { ideal: trackCaps.height.max }
+            });
+          } catch (_) {}
+        }
+
         $('torchBtn').classList.toggle('hidden', !trackCaps.torch);
 
-        // Tarkennustuki
         const hasFocusDist = Boolean(trackCaps.focusDistance && typeof trackCaps.focusDistance.min === 'number');
         $('manualFocusWrap').classList.toggle('hidden', !hasFocusDist);
 
@@ -2164,8 +2364,14 @@
           slider.value = settings.focusDistance ?? ((trackCaps.focusDistance.min + trackCaps.focusDistance.max) / 2);
         }
 
-        // Käynnistetään jatkuva automaattitarkennus heti
-        applyContinuousAutofocus();
+        const hasAnyAF = Array.isArray(trackCaps.focusMode) && trackCaps.focusMode.length > 0;
+        if (!hasAnyAF) {
+          $('camTipText').textContent = t('camTipFixed');
+          updateCameraInfoPill(t('focusFixed'), true);
+        } else {
+          $('camTipText').textContent = t('camTip');
+          await applyContinuousAutofocus();
+        }
       }
 
       async function applyContinuousAutofocus() {
@@ -2176,21 +2382,20 @@
             await activeVideoTrack.applyConstraints({ advanced: [{ focusMode: 'continuous' }] });
           } catch (_) {}
         }
-        $('focusStatusPill').textContent = t('focusAutoActive');
+        updateCameraInfoPill(t('focusAutoActive'), false);
       }
 
       async function triggerFocusAt(normX = 0.5, normY = 0.5, showRingAtPx = null) {
         const stage = $('cameraStage');
         const ring = $('focusRing');
 
-        // Visuaalinen tarkennuskehys napautettuun kohtaan
         const rect = stage.getBoundingClientRect();
         const rx = showRingAtPx ? showRingAtPx.x : rect.width * normX;
         const ry = showRingAtPx ? showRingAtPx.y : rect.height * normY;
         ring.style.left = rx + 'px';
         ring.style.top = ry + 'px';
         ring.classList.remove('active');
-        void ring.offsetWidth; // pakotetaan animaation uudelleenkäynnistys
+        void ring.offsetWidth;
         ring.classList.add('active');
 
         if (!activeVideoTrack || !activeVideoTrack.applyConstraints) return;
@@ -2202,11 +2407,9 @@
           adv.pointsOfInterest = [{ x: normX, y: normY }];
         }
 
-        // Käynnistetään kerta-tarkennus kohteeseen, jos tuettu
         if (modes.includes('single-shot')) {
           adv.focusMode = 'single-shot';
         } else if (modes.includes('continuous')) {
-          // Jos vain continuous on tuettu, pikainen manual->continuous -sykli pakottaa uudelleentarkennuksen
           if (modes.includes('manual')) {
             try {
               await activeVideoTrack.applyConstraints({ advanced: [{ focusMode: 'manual' }] });
@@ -2218,8 +2421,7 @@
         if (Object.keys(adv).length > 0) {
           try {
             await activeVideoTrack.applyConstraints({ advanced: [adv] });
-            $('focusStatusPill').textContent = t('focusTriggered');
-            // Palautetaan jatkuva automaattitarkennus hetken kuluttua, jos single-shot lukitsi tarkennuksen
+            updateCameraInfoPill(t('focusTriggered'), false);
             if (adv.focusMode === 'single-shot' && modes.includes('continuous')) {
               setTimeout(() => {
                 if (activeVideoTrack) {
@@ -2227,8 +2429,7 @@
                 }
               }, 1600);
             }
-          } catch (err) {
-            // Jotkin kamerat eivät tue pointsOfInterest + focusMode yhdistelmää -> kokeillaan pelkkää focusModea
+          } catch (_) {
             if (adv.focusMode) {
               try {
                 await activeVideoTrack.applyConstraints({ advanced: [{ focusMode: adv.focusMode }] });
@@ -2238,7 +2439,11 @@
         }
       }
 
-      // Napauta/klikkaa kamerakuvaa tarkentaaksesi kohteeseen
+      $('cameraVideo').addEventListener('loadedmetadata', () => {
+        const hasAnyAF = Array.isArray(trackCaps.focusMode) && trackCaps.focusMode.length > 0;
+        updateCameraInfoPill(hasAnyAF ? t('focusAutoActive') : t('focusFixed'), !hasAnyAF);
+      });
+
       $('cameraStage').addEventListener('pointerdown', (e) => {
         if (!cameraStream || $('cameraVideo').classList.contains('hidden')) return;
         const stage = $('cameraStage');
@@ -2261,7 +2466,7 @@
           await activeVideoTrack.applyConstraints({
             advanced: [{ focusMode: 'manual', focusDistance: dist }]
           });
-          $('focusStatusPill').textContent = t('focusManualActive');
+          updateCameraInfoPill(t('focusManualActive'), false);
         } catch (_) {}
       });
 
@@ -2305,15 +2510,15 @@
         try {
           const constraints = {
             video: deviceId
-              ? { deviceId: { exact: deviceId }, width: { ideal: 2560 }, height: { ideal: 1440 } }
-              : { facingMode: { ideal: 'environment' }, width: { ideal: 2560 }, height: { ideal: 1440 } },
+              ? { deviceId: { exact: deviceId }, width: { ideal: 3840 }, height: { ideal: 2160 } }
+              : { facingMode: { ideal: 'environment' }, width: { ideal: 3840 }, height: { ideal: 2160 } },
             audio: false
           };
           cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
           video.srcObject = cameraStream;
 
           const track = cameraStream.getVideoTracks()[0];
-          if (track) setupFocusAndTorchCapabilities(track);
+          if (track) await setupFocusAndTorchCapabilities(track);
 
           const devices = await navigator.mediaDevices.enumerateDevices();
           videoDevices = devices.filter((d) => d.kind === 'videoinput');
@@ -2335,6 +2540,7 @@
           cameraStream = null;
         }
         activeVideoTrack = null;
+        imageCaptureObj = null;
         trackCaps = {};
         $('cameraVideo').srcObject = null;
       }
@@ -2356,33 +2562,72 @@
         startCamera(videoDevices[currentDeviceIdx].deviceId);
       });
 
-      // Otetaan kuva täsmälleen A4-etsimen näkyvältä alueelta (WYSIWYG)
-      $('capturePhotoBtn').addEventListener('click', () => {
-        const video = $('cameraVideo');
-        if (!video.videoWidth || !video.videoHeight) return;
-
-        const vw = video.videoWidth;
-        const vh = video.videoHeight;
-        const videoRatio = vw / vh;
+      function cropSourceToA4Canvas(sourceEl, srcW, srcH) {
+        const srcRatio = srcW / srcH;
         const targetRatio = cameraA4Orientation === 'portrait' ? (210 / 297) : (297 / 210);
 
-        let sx = 0, sy = 0, sw = vw, sh = vh;
-        if (videoRatio > targetRatio) {
-          sw = vh * targetRatio;
-          sx = (vw - sw) / 2;
+        let sx = 0, sy = 0, sw = srcW, sh = srcH;
+        if (srcRatio > targetRatio) {
+          sw = srcH * targetRatio;
+          sx = (srcW - sw) / 2;
         } else {
-          sh = vw / targetRatio;
-          sy = (vh - sh) / 2;
+          sh = srcW / targetRatio;
+          sy = (srcH - sh) / 2;
         }
 
         const c = document.createElement('canvas');
         c.width = Math.max(1, Math.round(sw));
         c.height = Math.max(1, Math.round(sh));
-        c.getContext('2d').drawImage(video, sx, sy, sw, sh, 0, 0, c.width, c.height);
+        c.getContext('2d').drawImage(sourceEl, sx, sy, sw, sh, 0, 0, c.width, c.height);
+        return c;
+      }
 
-        stopCamera();
-        $('cameraModal').classList.remove('open');
-        openCropEditor(c, `scan-${scanPages.length + 1}.jpg`, null);
+      // Ottaa täyden tarkkuuden still-kuvan ImageCapturella (tai korkean tarkkuuden videoruudun)
+      $('capturePhotoBtn').addEventListener('click', async () => {
+        const video = $('cameraVideo');
+        if (!video.videoWidth || !video.videoHeight) return;
+
+        const capBtn = $('capturePhotoBtn');
+        const capLbl = $('captureBtnLabel');
+        capBtn.disabled = true;
+        capLbl.textContent = t('btnCapturing');
+
+        let capturedCanvas = null;
+
+        try {
+          // 1. Ensisijaisesti laitteiston aito still-valokuva (ImageCapture.takePhoto)
+          if (imageCaptureObj && imageCaptureObj.takePhoto) {
+            try {
+              const photoSettings = {};
+              if (imageCaptureObj.getPhotoCapabilities) {
+                const pCaps = await imageCaptureObj.getPhotoCapabilities();
+                if (pCaps && pCaps.imageWidth && pCaps.imageWidth.max) {
+                  photoSettings.imageWidth = pCaps.imageWidth.max;
+                }
+                if (pCaps && pCaps.imageHeight && pCaps.imageHeight.max) {
+                  photoSettings.imageHeight = pCaps.imageHeight.max;
+                }
+              }
+              const blob = await imageCaptureObj.takePhoto(photoSettings);
+              const fullCanvas = await bitmapOrBlobToCanvas(blob, 3600);
+              capturedCanvas = cropSourceToA4Canvas(fullCanvas, fullCanvas.width, fullCanvas.height);
+            } catch (icErr) {
+              console.warn('ImageCapture fallback to video frame:', icErr);
+            }
+          }
+
+          // 2. Varamenetelmä: videovirta korkeimmalla tarkkuudella
+          if (!capturedCanvas) {
+            capturedCanvas = cropSourceToA4Canvas(video, video.videoWidth, video.videoHeight);
+          }
+
+          stopCamera();
+          $('cameraModal').classList.remove('open');
+          openCropEditor(capturedCanvas, `scan-${scanPages.length + 1}.jpg`, null);
+        } finally {
+          capBtn.disabled = false;
+          capLbl.textContent = t('btnCapture');
+        }
       });
 
       /* ---------------------------------------------------------
@@ -2606,7 +2851,7 @@
       function commitCroppedPage(reopenCameraAfter = false) {
         const ordered = orderQuadClockwise(cropCorners);
         const warped = warpPerspective(cropSourceCanvas, ordered, cropFilter);
-        const dataUrl = warped.toDataURL('image/jpeg', 0.92);
+        const dataUrl = warped.toDataURL('image/jpeg', 0.94);
 
         if (cropReplaceIndex !== null && scanPages[cropReplaceIndex]) {
           scanPages[cropReplaceIndex].dataUrl = dataUrl;
@@ -2934,7 +3179,7 @@
       }
 
       /* ---------------------------------------------------------
-         PERSPEKTIIVISUORISTUS (HOMOGRAFIA + BILINEAARINEN INTERPOLAATIO)
+         PERSPEKTIIVISUORISTUS + TERÄVÖITYS
       --------------------------------------------------------- */
       function solveLinearSystem8(A, b) {
         const n = 8;
@@ -2984,7 +3229,7 @@
         let outW = Math.max(40, Math.round(Math.max(wTop, wBot)));
         let outH = Math.max(40, Math.round(Math.max(hLeft, hRight)));
 
-        const maxOut = 2200;
+        const maxOut = 2400;
         const scale = Math.min(1, maxOut / Math.max(outW, outH));
         outW = Math.round(outW * scale);
         outH = Math.round(outH * scale);
@@ -3037,6 +3282,9 @@
           }
         }
 
+        // Terävöitys (Unsharp Mask) parantaa tekstin luettavuutta
+        applyUnsharpMask(dst, outW, outH, filterMode === 'original' ? 0.3 : 0.55);
+
         if (filterMode === 'enhanced') {
           applyColorDocumentFilter(dst, outW, outH);
         } else if (filterMode === 'bw') {
@@ -3045,6 +3293,29 @@
 
         octx.putImageData(outImg, 0, 0);
         return outCanvas;
+      }
+
+      function applyUnsharpMask(data, w, h, amount = 0.45) {
+        if (w < 3 || h < 3 || amount <= 0) return;
+        const copy = new Uint8ClampedArray(data);
+        const rowStride = w * 4;
+        for (let y = 1; y < h - 1; y++) {
+          const row = y * rowStride;
+          for (let x = 1; x < w - 1; x++) {
+            const p = row + x * 4;
+            for (let c = 0; c < 3; c++) {
+              const center = copy[p + c];
+              const avg4 = (
+                copy[p - 4 + c] +
+                copy[p + 4 + c] +
+                copy[p - rowStride + c] +
+                copy[p + rowStride + c]
+              ) * 0.25;
+              const val = center + amount * (center - avg4);
+              data[p + c] = val < 0 ? 0 : val > 255 ? 255 : val;
+            }
+          }
+        }
       }
 
       function applyColorDocumentFilter(data, w, h) {
@@ -3183,6 +3454,7 @@
         $('mergeEmptyHint').classList.toggle('hidden', count > 0);
         $('clearMergeBtn').classList.toggle('hidden', count === 0);
         $('exportMergeBtn').disabled = count < 2;
+        $('previewMergePdfBtn').disabled = count < 2;
 
         list.innerHTML = '';
         mergeFiles.forEach((item, idx) => {
@@ -3243,18 +3515,37 @@
         updateMergeUI();
       });
 
+      async function buildMergePdfBytes() {
+        const merged = await PDFLib.PDFDocument.create();
+        for (const item of mergeFiles) {
+          const src = await PDFLib.PDFDocument.load(item.bytes);
+          const copied = await merged.copyPages(src, src.getPageIndices());
+          copied.forEach((p) => merged.addPage(p));
+        }
+        return await merged.save();
+      }
+
+      $('previewMergePdfBtn').addEventListener('click', async () => {
+        if (mergeFiles.length < 2) return;
+        const btn = $('previewMergePdfBtn');
+        btn.disabled = true;
+        try {
+          const bytes = await buildMergePdfBytes();
+          await openPdfPreview(bytes, $('mergePdfName').value || t('defaultMergeName'));
+        } catch (err) {
+          console.error(err);
+          toast(t('toastMergeFail'), 'error');
+        } finally {
+          btn.disabled = mergeFiles.length < 2;
+        }
+      });
+
       $('exportMergeBtn').addEventListener('click', async () => {
         if (mergeFiles.length < 2) return;
         const btn = $('exportMergeBtn');
         btn.disabled = true;
         try {
-          const merged = await PDFLib.PDFDocument.create();
-          for (const item of mergeFiles) {
-            const src = await PDFLib.PDFDocument.load(item.bytes);
-            const copied = await merged.copyPages(src, src.getPageIndices());
-            copied.forEach((p) => merged.addPage(p));
-          }
-          const outBytes = await merged.save();
+          const outBytes = await buildMergePdfBytes();
           await savePdfBytes(outBytes, $('mergePdfName').value || t('defaultMergeName'));
         } catch (err) {
           console.error(err);
@@ -3377,6 +3668,7 @@
           card.classList.toggle('selected', sel.has(p));
         });
         const hasSel = sel.size > 0;
+        $('previewSplitPdfBtn').disabled = !hasSel;
         $('exportSplitCombinedBtn').disabled = !hasSel;
         $('exportSplitSeparateBtn').disabled = !hasSel;
 
@@ -3462,16 +3754,32 @@
         e.target.value = '';
       });
 
-      $('exportSplitCombinedBtn').addEventListener('click', async () => {
+      async function buildSplitCombinedBytes() {
         const sorted = [...splitState.selected].sort((a, b) => a - b);
-        if (!sorted.length) return;
+        if (!sorted.length) return null;
+        const src = await PDFLib.PDFDocument.load(splitState.bytes);
+        const out = await PDFLib.PDFDocument.create();
+        const copied = await out.copyPages(src, sorted.map((p) => p - 1));
+        copied.forEach((page) => out.addPage(page));
+        return await out.save();
+      }
+
+      $('previewSplitPdfBtn').addEventListener('click', async () => {
+        if (!splitState.selected.size) return;
         try {
-          const src = await PDFLib.PDFDocument.load(splitState.bytes);
-          const out = await PDFLib.PDFDocument.create();
-          const copied = await out.copyPages(src, sorted.map((p) => p - 1));
-          copied.forEach((page) => out.addPage(page));
-          const bytes = await out.save();
-          await savePdfBytes(bytes, $('splitPdfName').value || t('defaultSplitName'));
+          const bytes = await buildSplitCombinedBytes();
+          if (bytes) await openPdfPreview(bytes, $('splitPdfName').value || t('defaultSplitName'));
+        } catch (err) {
+          console.error(err);
+          toast(t('toastSplitFail'), 'error');
+        }
+      });
+
+      $('exportSplitCombinedBtn').addEventListener('click', async () => {
+        if (!splitState.selected.size) return;
+        try {
+          const bytes = await buildSplitCombinedBytes();
+          if (bytes) await savePdfBytes(bytes, $('splitPdfName').value || t('defaultSplitName'));
         } catch (err) {
           console.error(err);
           toast(t('toastSplitFail'), 'error');
@@ -3532,6 +3840,131 @@
           console.error(err);
           toast(t('toastSplitSepFail'), 'error');
         }
+      });
+
+      /* ---------------------------------------------------------
+         PDF-KOKONAISUUDEN ESIKATSELUMODAALI
+      --------------------------------------------------------- */
+      let previewState = {
+        bytes: null,
+        filename: 'document',
+        zoom: 1.0,
+        pdfDoc: null
+      };
+
+      async function openPdfPreview(bytes, filename) {
+        closePdfPreview();
+        previewState.bytes = bytes;
+        previewState.filename = (filename || 'document').trim().replace(/\.pdf$/i, '') + '.pdf';
+        previewState.zoom = 1.0;
+
+        $('previewFileLabel').textContent = previewState.filename;
+        $('previewZoomResetBtn').textContent = '100%';
+        $('pdfPreviewMeta').textContent = formatBytes(bytes.byteLength);
+        $('pdfPreviewContainer').innerHTML = `<div class="empty-hint">${t('previewLoading')}</div>`;
+        $('pdfPreviewModal').classList.add('open');
+
+        if (!window.pdfjsLib) {
+          $('pdfPreviewContainer').innerHTML =
+            `<div class="empty-hint">${t('previewFallback', { size: formatBytes(bytes.byteLength) })}</div>`;
+          return;
+        }
+
+        try {
+          const pdfDoc = await pdfjsLib.getDocument({ data: new Uint8Array(bytes) }).promise;
+          previewState.pdfDoc = pdfDoc;
+          const total = pdfDoc.numPages;
+          const pagesStr = total === 1 ? t('pageOne') : t('pageMany', { n: total });
+          $('pdfPreviewMeta').textContent = `${pagesStr} • ${formatBytes(bytes.byteLength)}`;
+          await renderPreviewPages();
+        } catch (err) {
+          console.error(err);
+          $('pdfPreviewContainer').innerHTML =
+            `<div class="empty-hint">${t('previewFallback', { size: formatBytes(bytes.byteLength) })}</div>`;
+        }
+      }
+
+      async function renderPreviewPages() {
+        const container = $('pdfPreviewContainer');
+        const pdfDoc = previewState.pdfDoc;
+        if (!pdfDoc) return;
+
+        container.innerHTML = '';
+        const total = pdfDoc.numPages;
+        const maxDisplayWidth = Math.max(260, Math.min(760, container.clientWidth - 44));
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+
+        for (let p = 1; p <= total; p++) {
+          // Varmistetaan ettei modaali ole suljettu kesken renderöinnin
+          if (previewState.pdfDoc !== pdfDoc) return;
+
+          const page = await pdfDoc.getPage(p);
+          const vp1 = page.getViewport({ scale: 1 });
+          const fitScale = maxDisplayWidth / vp1.width;
+          const cssScale = fitScale * previewState.zoom;
+          const vp = page.getViewport({ scale: cssScale * dpr });
+
+          const sheet = document.createElement('div');
+          sheet.className = 'preview-page-sheet';
+
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(vp.width);
+          canvas.height = Math.round(vp.height);
+          canvas.style.width = Math.round(vp1.width * cssScale) + 'px';
+          canvas.style.height = Math.round(vp1.height * cssScale) + 'px';
+
+          const caption = document.createElement('div');
+          caption.className = 'preview-page-caption';
+          caption.textContent = t('pageOf', { n: p, total });
+
+          sheet.appendChild(canvas);
+          sheet.appendChild(caption);
+          container.appendChild(sheet);
+
+          await page.render({
+            canvasContext: canvas.getContext('2d'),
+            viewport: vp
+          }).promise;
+        }
+      }
+
+      function closePdfPreview() {
+        $('pdfPreviewModal').classList.remove('open');
+        if (previewState.pdfDoc) {
+          try { previewState.pdfDoc.destroy(); } catch (_) {}
+          previewState.pdfDoc = null;
+        }
+        previewState.bytes = null;
+        $('pdfPreviewContainer').innerHTML = '';
+      }
+
+      $('closePreviewBtn').addEventListener('click', closePdfPreview);
+      $('closePreviewFooterBtn').addEventListener('click', closePdfPreview);
+
+      $('previewZoomOutBtn').addEventListener('click', async () => {
+        if (!previewState.pdfDoc) return;
+        previewState.zoom = Math.max(0.5, +(previewState.zoom - 0.25).toFixed(2));
+        $('previewZoomResetBtn').textContent = Math.round(previewState.zoom * 100) + '%';
+        await renderPreviewPages();
+      });
+
+      $('previewZoomResetBtn').addEventListener('click', async () => {
+        if (!previewState.pdfDoc) return;
+        previewState.zoom = 1.0;
+        $('previewZoomResetBtn').textContent = '100%';
+        await renderPreviewPages();
+      });
+
+      $('previewZoomInBtn').addEventListener('click', async () => {
+        if (!previewState.pdfDoc) return;
+        previewState.zoom = Math.min(2.25, +(previewState.zoom + 0.25).toFixed(2));
+        $('previewZoomResetBtn').textContent = Math.round(previewState.zoom * 100) + '%';
+        await renderPreviewPages();
+      });
+
+      $('saveFromPreviewBtn').addEventListener('click', async () => {
+        if (!previewState.bytes) return;
+        await savePdfBytes(previewState.bytes, previewState.filename);
       });
 
       // Alustetaan käyttöliittymä valitulla kielellä
